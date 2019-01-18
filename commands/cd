@@ -1,0 +1,8 @@
+# Add command
+function cd() {
+    if [ $# -gt 0 ] && [ ! -z ${_pit_paths[$1]} ]; then
+        command cd ${_pit_paths[$1]}
+    else
+        command cd $*
+    fi
+}

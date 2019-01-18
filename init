@@ -1,0 +1,10 @@
+# Check user directory exists and create
+if [ ! -d $PIT_USER_DIRECTORY ]; then
+    mkdir $PIT_DIRECTORY
+fi
+
+# Add commands redefinition
+for _pitCommandPath in $(find $PIT_COMMANDS_PATH/*); do
+    source $(realpath $_pitCommandPath)
+done
+unset _pitCommandPath
