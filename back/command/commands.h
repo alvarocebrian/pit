@@ -1,0 +1,1 @@
+int cmd_path(int argc, char **argv);
