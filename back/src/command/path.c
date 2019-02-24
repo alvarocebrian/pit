@@ -42,12 +42,13 @@ void path_init() {
  * List the path pased as argv[0] or return all paths defined
  */
 int path_list(int argc, char **argv) {
-    array paths = path_get();
+    array *paths = path_get_all();
 
     int i;
     path *p;
-    for (p = paths.value, i = 0; i < paths.length; p++, i++) {
+    for (i = 0; i < array_length(paths); i++) {
         if(argc){
+            p = array_get(paths, i);
             if(!(strcmp(argv[0], p->name))) {
                 printf("%s\n", p->path);
                 break;
@@ -61,12 +62,8 @@ int path_list(int argc, char **argv) {
 };
 
 int path_add(int argc, char **argv) {
-
     if(argc == 2) {
-        array paths = path_get();
-
-        // Allocate space for the new path
-        paths.value = reallocarray(paths.value, ++paths.length, sizeof(path));
+        array *paths = path_get_all();
 
         // Create new path
         path p;
@@ -74,7 +71,7 @@ int path_add(int argc, char **argv) {
         strcpy(p.path, argv[1]);
 
         // Add new path to the array
-        ((path *)paths.value)[paths.length -1] = p;
+        array_push(paths, &p);
 
         // Store paths to file
         path_save(paths);
@@ -90,7 +87,16 @@ int path_add(int argc, char **argv) {
 
 int path_rm(int argc, char **argv) {
     if(argc == 1) {
+        array *paths = path_get_all();
 
+        path *p;
+        int i;
+        for (i = 0; i < array_length(paths); i++) {
+            p = array_get(paths, i);
+            if (!(strcmp(argv[0], p->name))) {
+                array_remove(paths, i);
+            }
+        }
     } else {
         error("Number of arguments non valid\n");
         path_usage();
@@ -98,19 +104,19 @@ int path_rm(int argc, char **argv) {
     }
 }
 
-void path_save(array paths) {
+void path_save(array *paths) {
     char pathFilePath[128]; snprintf(pathFilePath, 128, "%s/%s", PIT_PATH, PATH_FILE);
     FILE *file = fopen(pathFilePath, "w");
 
     if (file != NULL) {
         // Print number of paths
-        fprintf(file, "[%d]\n", paths.length);
+        fprintf(file, "[%d]\n", array_length(paths));
 
         // Print paths
         path *p;
-        int i;
-        for (p = paths.value, i = 0; i < paths.length; ++i, p++)
+        for (int i = 0; i < array_length(paths); ++i)
         {
+            p = array_get(paths, i);
             fprintf(file, PATH_PRINT_FORMAT, p->name, p->path);
         }
     }
@@ -130,37 +136,44 @@ void path_usage(void) {
     );
 }
 
-array path_get(void) {
+array* path_get_all(void) {
     FILE *file;
-    path *paths;
     int nAlias;
+    array *paths;
+    path *p;
 
     char pathFilePath[128]; snprintf(pathFilePath, 128, "%s/%s", PIT_PATH, PATH_FILE);
     file = fopen(pathFilePath, "r");
     if(file != NULL) {
+        // Read number of paths and initialize array
         fscanf(file,"[%d]\n", &nAlias);
-        paths = calloc(nAlias + 1, sizeof(path));
+        paths = array_init_with_size(nAlias);
 
+        // Read paths to path struct
         int i;
         path *p;
-        for(p = paths, i = 0; i < nAlias; p++, i++) {
+        for(i = 0; i < nAlias; i++) {
+            p = malloc(sizeof(path));
             fscanf(file, PATH_PRINT_FORMAT, p->name, p->path);
+            array_push(paths, p);
         }
         fclose(file);
     } else {
         e_error("Unknown error");
     }
 
-    return (array) {nAlias, paths};
+
+
 }
 
-path path_find(char name[]) {
-    array paths = path_get();
+path* path_find(char name[]) {
+    array *paths = path_get_all();
     path *p;
-    int i;
-    for(i = 0; p = paths.value; i < paths.length; i++, p++) {
+
+    for(int i = 0; array_length(paths); i++) {
+        p = array_get(paths, i);
         if (!(strcmp(name, p->name))) {
-            return *p;
+            return p;
         }
     }
 
