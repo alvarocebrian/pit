@@ -1,28 +1,32 @@
+#include "pit.h"
+#include "commands.h"
 #include <stdio.h>
-#include <pit.h>
-#include <command/commands.h>
+#include <errno.h>
+#include <string.h>
+
+static cmd commands[] = {
+    {"path", path_cmd }
+};
 
 int main(int argc, char **argv) {
-    static struct cmd_struct commands[] = {
-        {"path", cmd_path },
-        {"path", cmd_path }
-    };
+    pit_init();
 
     if(argc > 1) {
-        struct cmd_struct *command = getCommand(argv[1], (struct cmd_struct**) (&commands));
+        struct cmd_struct *command = getCommand(argv[1], commands);
         if(command) {
             argc -= 2;
             argv += 2;
-            int errno = command->run(argc, argv);
+            command->run(argc, argv);
 
             return errno;
         }
     }
 
-    usage();
+    pit_usage();
 }
 
-void usage(void) {
+void pit_usage(void) {
+
     fprintf(stderr,
         "The pit command improves commands\n"
         "\n"
@@ -33,15 +37,19 @@ void usage(void) {
     );
 }
 
+void pit_init(void) {
+    #include "directory.h"
 
-struct cmd_struct *getCommand(const char s[], struct cmd_struct **commands)
+    init_pit_directory();
+}
+
+struct cmd_struct *getCommand(const char s[], cmd *commands)
 {
-    int i;
-    printf("%d\n",ARRAY_SIZE(commands) );
-    for (i = 0; i < ARRAY_SIZE(commands); i++) {
-        struct cmd_struct *p = (*commands) + i;
+    for (cmd *p = commands; p->cmd != NULL; p++) {
         if (!strcmp(s, p->cmd))
             return p;
     };
+
     return NULL;
 }
+
