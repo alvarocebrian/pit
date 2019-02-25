@@ -6,6 +6,8 @@ extern char PIT_PATH[128];
 
 int print_to_file(char fileName[], char content[]);
 
+void str_concat(char* str, ...);
+
 /*typedef struct str_array {
     // array length
     int length;

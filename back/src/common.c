@@ -1,6 +1,8 @@
 #include "common.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdarg.h>
+#include <string.h>
 
 /**
  *  Return values:
@@ -18,4 +20,8 @@ int print_to_file(char fileName[], char content[]) {
     }
 
     return 1;
+}
+
+void str_concat(char* str, ...) {
+
 }
