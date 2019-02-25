@@ -16,7 +16,7 @@ array *array_init_with_size (unsigned int size) {
 
 	self->refs = 1;
 	self->length = 0;
-	self->buffer_size = size;
+	self->buffer_size = size < 1 ? 1 : size;
 	self->buffer = malloc(size * sizeof(void*));
 
 	return self;

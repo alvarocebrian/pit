@@ -1,8 +1,9 @@
 # Add command
 function cd() {
-    if [ $# -gt 0 ] && [ ! -z ${_pit_paths[$1]} ]; then
-        command cd ${_pit_paths[$1]}
-    else
-        command cd $*
+    if [ $# -gt 0 ]; then
+        path=$(pit path find $1);
+
+        if [ $path ]; then command cd $path; return 0; fi
     fi
+    command cd $*
 }

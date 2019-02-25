@@ -1,8 +1,10 @@
-extern char PIT_PATH[50];
+extern char PIT_PATH[128];
 
 #define PIT_DIR ".pit"
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+
+int print_to_file(char fileName[], char content[]);
 
 /*typedef struct str_array {
     // array length
