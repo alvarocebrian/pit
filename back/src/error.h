@@ -2,3 +2,5 @@
 
 #define error(message) fprintf(stderr, "%s\n", message)
 #define e_error(message) error(message); exit(1);
+
+#define INVALID_NUM_ARGS_E "Invalid number of arguments"

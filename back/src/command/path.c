@@ -102,14 +102,34 @@ int path_add_cmd(int argc, char **argv) {
         return 0;
 
     } else {
-        error("Number of arguments non valid\n");
+        error(INVALID_NUM_ARGS_E);
         path_usage();
+
         exit(1);
     }
 }
 
 int path_edit_cmd(int argc, char **argv) {
+    if (argc == 2) {
+        array *paths = path_get_all();
 
+        path *p;
+        for (int i = 0; i < array_length(paths); i++) {
+            p = array_get(paths, i);
+            if (!(strcmp(argv[0], p->name))) {
+                strcpy(p->path, argv[1]);
+                path_save(paths);
+                break;
+            }
+        }
+
+        return 0;
+    } else {
+        error(INVALID_NUM_ARGS_E);
+        path_usage();
+
+        exit(1);
+    }
 }
 
 int path_rm_cmd(int argc, char **argv) {
@@ -117,12 +137,12 @@ int path_rm_cmd(int argc, char **argv) {
         array *paths = path_get_all();
 
         path *p;
-        int i;
-        for (i = 0; i < array_length(paths); i++) {
+        for (int i = 0; i < array_length(paths); i++) {
             p = array_get(paths, i);
             if (!(strcmp(argv[0], p->name))) {
-                array_remove(paths, i);
+                free(array_remove(paths, i));
                 path_save(paths);
+                break;
             }
         }
 
@@ -162,10 +182,11 @@ void path_usage(void) {
         "The path command let define some paths for pit\n"
         "\n"
         "<options>\n"
-        "\tlist                    List all paths defined\n"
-        "\tfind <path_name>        Return the path for <path_name>\n"
-        "\tadd <path_name> <path>  Add a new <path> to pit with name <path_name>\n"
-        "\trm <path_name>          Remove the path defined as <path_name>\n"
+        "\tlist                     List all paths defined\n"
+        "\tfind <path_name>         Return the path for <path_name>\n"
+        "\tadd <path_name> <path>   Add a new <path> to pit with name <path_name>\n"
+        "\tedit <path_name> <path>  Changes the <path> named <path_name>\n"
+        "\trm <path_name>           Remove the path defined as <path_name>\n"
     );
 }
 
