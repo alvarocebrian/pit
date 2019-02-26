@@ -9,7 +9,7 @@
  *      0 on success
  *      1 on error
  */
-int print_to_file(char fileName[], char content[]) {
+int fprint(char fileName[], char content[]) {
     FILE *file;
 
     if (file = fopen(fileName, "a")) {
@@ -20,8 +20,4 @@ int print_to_file(char fileName[], char content[]) {
     }
 
     return 1;
-}
-
-void str_concat(char* str, ...) {
-
 }

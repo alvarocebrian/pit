@@ -11,18 +11,21 @@
 int path_cmd(int argc, char **argv) {
     static cmd subcommands[] = {
         {"list", path_list_cmd },
+        {"find", path_find_cmd},
         {"add", path_add_cmd },
-        {"rm", path_rm_cmd },
-        {"find", path_find_cmd}
+        {"edit", path_edit_cmd},
+        {"rm", path_rm_cmd }
     };
 
     if(argc) {
         path_init();
         cmd *subcommand = getCommand(argv[0], subcommands);
         if(subcommand) {
-            if (subcommand->run(--argc, ++argv));
-                return 0;
+            subcommand->run(--argc, ++argv);
+
+            return errno;
         }
+        error("Unknown command");
     }
 
     path_usage();
@@ -34,7 +37,7 @@ void path_init() {
     // Create path file if it does not exists
     if(file_exists(pathFilePath) != 1) {
         if(create_file(pathFilePath) == 0) {
-            print_to_file(pathFilePath, "[0]\n");
+            fprint(pathFilePath, "[0]\n");
         } else {
             error("Unexpected error");
         }
@@ -42,7 +45,6 @@ void path_init() {
 }
 
 // Subcommands
-
 int path_list_cmd(int argc, char **argv) {
     array *paths = path_get_all();
 
@@ -68,20 +70,27 @@ int path_find_cmd(int argc, char **argv) {
                 break;
             }
         }
+
+        return 0;
     } else {
         error("You must provide an argument");
         path_usage();
-        exit(1);
+
+        return 1;
     }
 }
 
 int path_add_cmd(int argc, char **argv) {
     if(argc == 2) {
+
+        // TODO Add check for avoiding invalid paths
+
         array *paths = path_get_all();
 
         // Create new path
         path p;
         strcpy(p.name, argv[0]);
+        //TODO Add string wrapping for avoiding spaces in paths
         strcpy(p.path, argv[1]);
 
         // Add new path to the array
@@ -97,6 +106,10 @@ int path_add_cmd(int argc, char **argv) {
         path_usage();
         exit(1);
     }
+}
+
+int path_edit_cmd(int argc, char **argv) {
+
 }
 
 int path_rm_cmd(int argc, char **argv) {

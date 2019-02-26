@@ -10,9 +10,10 @@ typedef struct str_path {
 } path;
 
 int path_list_cmd(int argc, char **argv);
-int path_add_cmd(int argc, char **argv);
-int path_rm_cmd(int argc, char **argv);
 int path_find_cmd(int argc, char **argv);
+int path_add_cmd(int argc, char **argv);
+int path_edit_cmd(int argc, char **argv);
+int path_rm_cmd(int argc, char **argv);
 
 void path_usage(void);
 array* path_get_all(void);

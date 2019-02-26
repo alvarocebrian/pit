@@ -4,7 +4,7 @@ extern char PIT_PATH[128];
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
-int print_to_file(char fileName[], char content[]);
+int fprint(char fileName[], char content[]);
 
 void str_concat(char* str, ...);
 
