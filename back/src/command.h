@@ -7,8 +7,9 @@ typedef struct cmd_struct {
 } cmd;
 
 struct cmd_struct *getCommand(const char s[], cmd *commands);
+
 int path_cmd(int argc, char **argv);
-int alias_cmd(int argc, char **argv);
+int cmd_cmd(int argc, char **argv);
 
 
 

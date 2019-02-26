@@ -11,7 +11,7 @@ cleanall:
 	rm bin/pit
 
 install:
-	mv bin/pit $(INSTALL)
+	cp bin/pit $(INSTALL)
 
 
 

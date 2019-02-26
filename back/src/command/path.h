@@ -21,5 +21,6 @@ void path_init(void);
 void path_save(array *paths);
 path* path_find(char name[]);
 
+extern char pathFilePath[128];
 #define PATH_FILE "paths"
 #define PATH_PRINT_FORMAT "%s : %s\n"

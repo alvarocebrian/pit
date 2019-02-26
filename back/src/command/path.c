@@ -1,5 +1,5 @@
 #include "path.h"
-#include "commands.h"
+#include "command.h"
 #include "directory.h"
 #include "error.h"
 #include <stdio.h>
@@ -25,21 +25,24 @@ int path_cmd(int argc, char **argv) {
 
             return errno;
         }
-        error("Unknown command");
+        error(UNKNOWN_CMD_E);
     }
 
     path_usage();
+
+    return 0;
 }
 
+char pathFilePath[128];
 void path_init() {
-    char pathFilePath[128]; snprintf(pathFilePath, 128, "%s/%s", PIT_PATH, PATH_FILE);
+    snprintf(pathFilePath, 128, "%s/%s", PIT_PATH, PATH_FILE);
 
     // Create path file if it does not exists
     if(file_exists(pathFilePath) != 1) {
         if(create_file(pathFilePath) == 0) {
             fprint(pathFilePath, "[0]\n");
         } else {
-            error("Unexpected error");
+            error(UNEXP_E);
         }
     }
 }
@@ -73,7 +76,7 @@ int path_find_cmd(int argc, char **argv) {
 
         return 0;
     } else {
-        error("You must provide an argument");
+        error(INVALID_NUM_ARGS_E);
         path_usage();
 
         return 1;
@@ -82,6 +85,7 @@ int path_find_cmd(int argc, char **argv) {
 
 int path_add_cmd(int argc, char **argv) {
     if(argc == 2) {
+        // TODO Check the path does not exists yet
 
         // TODO Add check for avoiding invalid paths
 
@@ -158,7 +162,6 @@ int path_rm_cmd(int argc, char **argv) {
 // Help functions
 
 void path_save(array *paths) {
-    char pathFilePath[128]; snprintf(pathFilePath, 128, "%s/%s", PIT_PATH, PATH_FILE);
     FILE *file = fopen(pathFilePath, "w");
 
     if (file != NULL) {
@@ -196,7 +199,7 @@ array* path_get_all(void) {
     array *paths;
     path *p;
 
-    char pathFilePath[128]; snprintf(pathFilePath, 128, "%s/%s", PIT_PATH, PATH_FILE);
+    snprintf(pathFilePath, 128, "%s/%s", PIT_PATH, PATH_FILE);
     file = fopen(pathFilePath, "r");
     if (file != NULL) {
         // Read number of paths and initialize array

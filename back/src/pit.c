@@ -1,11 +1,12 @@
 #include "pit.h"
-#include "commands.h"
+#include "command.h"
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
 
 static cmd commands[] = {
-    {"path", path_cmd }
+    {"path", path_cmd },
+    {"cmd", cmd_cmd}
 };
 
 int main(int argc, char **argv) {
@@ -34,6 +35,7 @@ void pit_usage(void) {
         "\n"
         "<command>\n"
         "\tpath    Define paths for use inside pit\n"
+        "\tcmd     Define commands to automate actions\n"
     );
 }
 
@@ -42,14 +44,3 @@ void pit_init(void) {
 
     init_pit_directory();
 }
-
-struct cmd_struct *getCommand(const char s[], cmd *commands)
-{
-    for (cmd *p = commands; p->cmd != NULL; p++) {
-        if (!strcmp(s, p->cmd))
-            return p;
-    };
-
-    return NULL;
-}
-
