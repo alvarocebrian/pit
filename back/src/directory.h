@@ -1,6 +1,8 @@
 #ifndef _DIRECTORY_H
 #define _DIRECTORY_H
 
+#include "array.h"
+
 #include <sys/stat.h>
 #include <stdbool.h>
 #include <unistd.h>
@@ -33,6 +35,10 @@ int create_file(const char path[]);
  */
 int printd(const char path[]);
 
+/**
+ *
+ */
+array* ls(const char path[]);
 
 #define create_dir mkdir(path, mode);
 #define _create_dir(path) mkdir(path, 0700)

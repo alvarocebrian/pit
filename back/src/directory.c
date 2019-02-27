@@ -36,21 +36,36 @@ int dir_exists(const char path[]) {
 }
 
 int printd(const char path[]) {
+    array * elements = ls(path);
+
+    char * element;
+    for(int i = 0; i < array_length(elements); i++) {
+        element = array_get(elements, i);
+        if (strcmp(".", element) && strcmp("..", element))
+            printf("%s\t", element);
+    }
+
+    printf("\n");
+
+    return 0;
+}
+
+array* ls(const char path[]) {
     DIR *dir;
     struct dirent *d;
+    array *elements;
 
     dir = opendir(path);
     if (dir) {
+        elements = array_init();
         while ((d = readdir(dir)) != NULL)
         {
-            if ((strcmp(".", d->d_name) && strcmp("..", d->d_name)))
-                printf("%s\t", d->d_name);
+            array_push(elements, d->d_name);
         }
-        printf("\n");
         closedir(dir);
     }
 
-    return 0;
+    return elements;
 }
 
 int file_exists(const char path[]) {

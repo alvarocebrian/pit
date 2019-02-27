@@ -13,10 +13,11 @@ array *array_init () {
 
 array *array_init_with_size (unsigned int size) {
 	array *self = malloc(sizeof(array));
+	size = size < 0 ? 1 : size;
 
 	self->refs = 1;
 	self->length = 0;
-	self->buffer_size = size < 1 ? 1 : size;
+	self->buffer_size = size;
 	self->buffer = malloc(size * sizeof(void*));
 
 	return self;

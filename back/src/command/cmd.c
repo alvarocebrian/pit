@@ -49,6 +49,7 @@ void cmd_init() {
 }
 
 //Subcommmands
+
 int cmd_list_cmd(int argc, char **argv) {
     printd(cmdDirPath);
 
@@ -107,6 +108,9 @@ int cmd_rm_cmd(int argc, char **argv) {
     }
 }
 
+
+// Help functions
+
 void cmd_usage(void) {
     fprintf(stderr,
         "usage: pit cmd <options>\n"
@@ -124,7 +128,16 @@ void cmd_usage(void) {
 char* cmd_get(char cmd[]) {
     char *cmdPath = calloc(128, sizeof(char));
 
+    // Todo sanitize cmd to avoid go out of the dir
     sprintf(cmdPath, "%s/%s", cmdDirPath, cmd);
 
     return cmdPath;
+}
+
+array* cmd_get_all() {
+    array *cmds;
+
+    cmds = ls(cmdDirPath);
+
+    return cmds;
 }

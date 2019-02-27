@@ -48,6 +48,7 @@ void path_init() {
 }
 
 // Subcommands
+
 int path_list_cmd(int argc, char **argv) {
     array *paths = path_get_all();
 
