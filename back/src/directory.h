@@ -30,14 +30,8 @@ int file_exists(const char path[]);
  */
 int create_file(const char path[]);
 
-/**
- *
- */
 int printd(const char path[]);
 
-/**
- *
- */
 array* ls(const char path[]);
 
 #define create_dir mkdir(path, mode);

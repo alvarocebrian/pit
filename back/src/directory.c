@@ -2,27 +2,11 @@
 #include "error.h"
 #include "directory.h"
 
-#include <stdlib.h>
 #include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-
-char PIT_PATH[128];
-void init_pit_directory(void) {
-    // Init pit path
-    sprintf(PIT_PATH,"%s/%s", getenv("HOME"), PIT_DIR);
-
-    // Create pit directory if it does not exists yet
-    if (dir_exists(PIT_PATH) != true) {
-        if (_create_dir(PIT_PATH) == -1) {
-            char err[50];
-            sprintf(err, "Can't create pit directory at %s", PIT_PATH);
-            e_error(err);
-        }
-    }
-}
 
 int dir_exists(const char path[]) {
     DIR* dir;

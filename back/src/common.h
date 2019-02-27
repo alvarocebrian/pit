@@ -7,12 +7,3 @@ extern char PIT_PATH[128];
 int fprint(char fileName[], char content[]);
 
 void str_concat(char* str, ...);
-
-/*typedef struct str_array {
-    // array length
-    int length;
-
-    // array value
-    void *value ;
-} array;
-*/

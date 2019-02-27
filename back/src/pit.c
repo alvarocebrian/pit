@@ -1,5 +1,10 @@
 #include "pit.h"
 #include "command.h"
+#include "directory.h"
+#include "common.h"
+#include "error.h"
+
+#include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -10,9 +15,11 @@ static cmd commands[] = {
 };
 
 int main(int argc, char **argv) {
-    pit_init();
-
     if(argc > 1) {
+        // Init pit
+        pit_init();
+
+        // Execute the command
         struct cmd_struct *command = getCommand(argv[1], commands);
         if(command) {
             argc -= 2;
@@ -39,8 +46,17 @@ void pit_usage(void) {
     );
 }
 
+char PIT_PATH[128];
 void pit_init(void) {
-    #include "directory.h"
+    // Init pit path
+    sprintf(PIT_PATH,"%s/%s", getenv("HOME"), PIT_DIR);
 
-    init_pit_directory();
+    // Create pit directory if it does not exists yet
+    if (dir_exists(PIT_PATH) != true) {
+        if (_create_dir(PIT_PATH) == -1) {
+            char err[50];
+            sprintf(err, "Can't create pit directory at %s", PIT_PATH);
+            e_error(err);
+        }
+    }
 }
