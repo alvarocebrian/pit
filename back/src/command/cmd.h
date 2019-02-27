@@ -3,6 +3,7 @@
 
 void cmd_init();
 void cmd_usage(void);
+char * cmd_get(char cmd[]);
 
 int cmd_list_cmd(int argc, char **argv);
 int cmd_add_cmd(int argc, char **argv);

@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
 
 char PIT_PATH[128];
 void init_pit_directory(void) {
@@ -31,6 +32,24 @@ int dir_exists(const char path[]) {
     }
 
     return errno;
+}
+
+int printd(const char path[]) {
+    DIR *dir;
+    struct dirent *d;
+
+    dir = opendir(path);
+    if (dir) {
+        while ((d = readdir(dir)) != NULL)
+        {
+            if ((strcmp(".", d->d_name) && strcmp("..", d->d_name)))
+                printf("%s\t", d->d_name);
+        }
+        printf("\n");
+        closedir(dir);
+    }
+
+    return 0;
 }
 
 int file_exists(const char path[]) {
