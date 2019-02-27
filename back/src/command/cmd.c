@@ -37,7 +37,7 @@ int cmd_cmd(int argc, char **argv) {
 
 char cmdDirPath[128];
 void cmd_init() {
-    snprintf(cmdDirPath, sizeof(cmdDirPath), "%s/%s", PIT_PATH, CMD_DIR);
+    sprintf(cmdDirPath, "%s/%s", PIT_PATH, CMD_DIR);
 
     if (dir_exists(cmdDirPath) != true) {
         if(_create_dir(cmdDirPath) != 0) {

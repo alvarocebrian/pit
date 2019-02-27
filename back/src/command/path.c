@@ -35,7 +35,7 @@ int path_cmd(int argc, char **argv) {
 
 char pathFilePath[128];
 void path_init() {
-    snprintf(pathFilePath, 128, "%s/%s", PIT_PATH, PATH_FILE);
+    sprintf(pathFilePath, "%s/%s", PIT_PATH, PATH_FILE);
 
     // Create path file if it does not exists
     if(file_exists(pathFilePath) != 1) {
@@ -199,7 +199,7 @@ array* path_get_all(void) {
     array *paths;
     path *p;
 
-    snprintf(pathFilePath, 128, "%s/%s", PIT_PATH, PATH_FILE);
+    sprintf(pathFilePath, "%s/%s", PIT_PATH, PATH_FILE);
     file = fopen(pathFilePath, "r");
     if (file != NULL) {
         // Read number of paths and initialize array

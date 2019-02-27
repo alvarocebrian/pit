@@ -10,13 +10,13 @@
 char PIT_PATH[128];
 void init_pit_directory(void) {
     // Init pit path
-    snprintf(PIT_PATH, 128, "%s/%s", getenv("HOME"), PIT_DIR);
+    sprintf(PIT_PATH,"%s/%s", getenv("HOME"), PIT_DIR);
 
     // Create pit directory if it does not exists yet
     if (dir_exists(PIT_PATH) != true) {
         if (_create_dir(PIT_PATH) == -1) {
             char err[50];
-            snprintf(err, 50, "Can't create pit directory at %s", PIT_PATH);
+            sprintf(err, "Can't create pit directory at %s", PIT_PATH);
             e_error(err);
         }
     }
