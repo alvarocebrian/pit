@@ -79,13 +79,26 @@ int cmd_add_cmd(int argc, char **argv) {
 }
 
 int cmd_edit_cmd(int argc, char **argv) {
+    if (argc == 1) {
+        char *cmdPath = cmd_get(argv[0]);
+        if (file_exists(cmdPath) == true) {
+            char openCmd [128];
+            sprintf(openCmd, "editor %s", cmdPath);
+            system(openCmd);
 
+            return 0;
+        }
+
+    }
 }
 
 int cmd_rm_cmd(int argc, char **argv) {
     if(argc == 1) {
         char *cmdPath = cmd_get(argv[0]);
 
+        remove_file(cmdPath);
+
+        return errno;
     } else {
         error(INVALID_NUM_ARGS_E);
         cmd_usage();
@@ -93,7 +106,6 @@ int cmd_rm_cmd(int argc, char **argv) {
         exit(1);
     }
 }
-
 
 void cmd_usage(void) {
     fprintf(stderr,
@@ -109,7 +121,7 @@ void cmd_usage(void) {
     );
 }
 
-char * cmd_get(char cmd[]) {
+char* cmd_get(char cmd[]) {
     char *cmdPath = calloc(128, sizeof(char));
 
     sprintf(cmdPath, "%s/%s", cmdDirPath, cmd);

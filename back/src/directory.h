@@ -3,6 +3,7 @@
 
 #include <sys/stat.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 void init_pit_directory(void);
 
@@ -35,5 +36,7 @@ int printd(const char path[]);
 
 #define create_dir mkdir(path, mode);
 #define _create_dir(path) mkdir(path, 0700)
+
+#define remove_file(path) unlink(path)
 
 #endif
