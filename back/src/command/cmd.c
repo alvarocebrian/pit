@@ -3,6 +3,8 @@
 #include "common.h"
 #include "directory.h"
 #include "error.h"
+
+#include <string.h>
 #include <stdio.h>
 #include "errno.h"
 
@@ -46,6 +48,8 @@ void cmd_init() {
             e_error(UNEXP_E);
         }
     }
+
+    // TODO Check there is an editor installed
 }
 
 //Subcommmands
@@ -58,7 +62,7 @@ int cmd_list_cmd(int argc, char **argv) {
 
 int cmd_add_cmd(int argc, char **argv) {
     if (argc == 1) {
-        char *cmdPath = cmd_get(argv[0]);
+        char *cmdPath = cmd_get_path(argv[0]);
 
         // Create the file for storing the command
         if (create_file(cmdPath) == 0) {
@@ -81,25 +85,33 @@ int cmd_add_cmd(int argc, char **argv) {
 
 int cmd_edit_cmd(int argc, char **argv) {
     if (argc == 1) {
-        char *cmdPath = cmd_get(argv[0]);
+        char *cmdPath = cmd_get_path(argv[0]);
         if (file_exists(cmdPath) == true) {
             char openCmd [128];
             sprintf(openCmd, "editor %s", cmdPath);
             system(openCmd);
 
             return 0;
+        } else {
+            e_error(UNEXISTING_CMD_E);
         }
+    } else {
+        error(INVALID_NUM_ARGS_E);
+        cmd_usage();
 
+        exit(1);
     }
 }
 
 int cmd_rm_cmd(int argc, char **argv) {
     if(argc == 1) {
-        char *cmdPath = cmd_get(argv[0]);
+        char *cmdPath = cmd_get_path(argv[0]);
 
-        remove_file(cmdPath);
-
-        return errno;
+        if (file_exists(cmdPath) == true) {
+            remove_file(cmdPath);
+        } else {
+            e_error(UNEXISTING_CMD_E);
+        }
     } else {
         error(INVALID_NUM_ARGS_E);
         cmd_usage();
@@ -125,13 +137,20 @@ void cmd_usage(void) {
     );
 }
 
-char* cmd_get(char cmd[]) {
-    char *cmdPath = calloc(128, sizeof(char));
+char* cmd_get_path(char cmd[]) {
+    char *cmdPath;
+    char * command;
 
-    // Todo sanitize cmd to avoid go out of the dir
-    sprintf(cmdPath, "%s/%s", cmdDirPath, cmd);
+    if (is_valid_filename(cmd) == true) {
+        cmdPath = calloc(128, sizeof(char));
 
-    return cmdPath;
+            // Todo sanitize cmd to avoid go out of the dir
+            sprintf(cmdPath, "%s/%s", cmdDirPath, cmd);
+
+            return cmdPath;
+    }
+
+    return NULL;
 }
 
 array* cmd_get_all() {

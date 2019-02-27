@@ -45,4 +45,12 @@ array* ls(const char path[]);
 
 #define remove_file(path) unlink(path)
 
+/**
+ *  Check @filename is a valid filename
+ *  @return
+ *      true if is a valid filename
+ *      false if is a non-valid filenam
+ */
+#define is_valid_filename(filename) ! strchr(filename, '/')
+
 #endif
