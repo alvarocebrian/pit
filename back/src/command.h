@@ -1,3 +1,6 @@
+#ifndef _COMMAND_H_
+#define _COMMAND_H_
+
 typedef struct cmd_struct {
     // command name
     char *cmd;
@@ -12,5 +15,5 @@ int path_cmd(int argc, char **argv);
 int cmd_cmd(int argc, char **argv);
 int exec_cmd(int argc, char **argv);
 
-
+#endif
 

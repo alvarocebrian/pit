@@ -1,3 +1,6 @@
+#ifndef _PATH_H_
+#define _PATH_H_
+
 #include "common.h"
 #include "array.h"
 
@@ -24,3 +27,5 @@ path* path_find(char name[]);
 extern char pathFilePath[128];
 #define PATH_FILE "paths"
 #define PATH_PRINT_FORMAT "%s : %s\n"
+
+#endif

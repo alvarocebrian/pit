@@ -1,3 +1,6 @@
+#ifndef _CMD_H_
+#define _CMD_H_
+
 #include "array.h"
 
 #define ALIAS_DIR "alias"
@@ -15,3 +18,5 @@ int cmd_rm_cmd(int argc, char **argv);
 extern char cmdDirPath[128];
 #define CMD_DIR "cmd"
 #define UNEXISTING_CMD_E "Unexisting command"
+
+#endif
