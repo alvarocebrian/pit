@@ -20,7 +20,7 @@ int path_rm_cmd(int argc, char **argv);
 
 void path_usage(void);
 array* path_get_all(void);
-void path_init(void);
+int path_init(void);
 void path_save(array *paths);
 path* path_find(char name[]);
 

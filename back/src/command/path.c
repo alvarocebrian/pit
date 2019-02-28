@@ -1,4 +1,4 @@
-#include "path.h"
+    #include "path.h"
 #include "command.h"
 #include "directory.h"
 #include "error.h"
@@ -34,7 +34,7 @@ int path_cmd(int argc, char **argv) {
 }
 
 char pathFilePath[128];
-void path_init() {
+int path_init(void) {
     sprintf(pathFilePath, "%s/%s", PIT_PATH, PATH_FILE);
 
     // Create path file if it does not exists

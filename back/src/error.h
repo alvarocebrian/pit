@@ -2,6 +2,7 @@
 #define _ERROR_H_
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #define debug(message) fprintf(stderr, "%s:%d %s\n", __FILE__, __LINE__, message)
 

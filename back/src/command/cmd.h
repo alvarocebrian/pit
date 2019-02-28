@@ -5,7 +5,7 @@
 
 #define ALIAS_DIR "alias"
 
-void cmd_init();
+int cmd_init(void);
 void cmd_usage(void);
 char* cmd_get_path(char cmd[]);
 array* cmd_get_all();

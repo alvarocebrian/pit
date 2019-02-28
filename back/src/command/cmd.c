@@ -6,7 +6,9 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "errno.h"
+#include <sys/stat.h>
+#include <errno.h>
+
 
 int cmd_cmd(int argc, char **argv) {
     static cmd subcommands[] = {
@@ -38,7 +40,7 @@ int cmd_cmd(int argc, char **argv) {
 }
 
 char cmdDirPath[128];
-void cmd_init() {
+int cmd_init(void) {
     // Create the path for the cmd directory
     sprintf(cmdDirPath, "%s/%s", PIT_PATH, CMD_DIR);
 
@@ -69,8 +71,9 @@ int cmd_add_cmd(int argc, char **argv) {
             char openCmd [128];
             sprintf(openCmd, "editor %s", cmdPath);
             system(openCmd);
+            chmod(cmdPath, 0750);
 
-            return errno;
+            return 0;
         } else {
             e_error(UNEXP_E);
         }

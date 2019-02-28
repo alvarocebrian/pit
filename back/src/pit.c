@@ -3,6 +3,8 @@
 #include "directory.h"
 #include "common.h"
 #include "error.h"
+#include "path.h"
+#include "cmd.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,8 +12,9 @@
 #include <string.h>
 
 static cmd commands[] = {
-    {"path", path_cmd },
-    {"cmd", cmd_cmd}
+    {"path", path_cmd, path_init},
+    {"cmd", cmd_cmd, cmd_init},
+    {"exec", exec_cmd}
 };
 
 int main(int argc, char **argv) {
@@ -41,8 +44,9 @@ void pit_usage(void) {
         "Usage: pit <command> [<options>...]\n"
         "\n"
         "<command>\n"
-        "\tpath    Define paths for use inside pit\n"
-        "\tcmd     Define commands to automate actions\n"
+        "\tpath     Define paths for use inside pit\n"
+        "\tcmd      Define commands to automate actions\n"
+        "\texec     Execute a command defined\n"
     );
 }
 
@@ -57,6 +61,14 @@ void pit_init(void) {
             char err[50];
             sprintf(err, "Can't create pit directory at %s", PIT_PATH);
             e_error(err);
+        }
+    }
+
+    // Init commands
+    cmd *command;
+    for(command = commands; command->name != NULL; command++) {
+        if(command->init) {
+            command->init();
         }
     }
 }
