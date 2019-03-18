@@ -61,7 +61,7 @@ int file_exists(const char path[]) {
         return true;
     }
 
-    return errno;
+    return false;
 }
 
 int create_file(const char path[]) {

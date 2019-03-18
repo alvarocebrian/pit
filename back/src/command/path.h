@@ -21,11 +21,15 @@ int path_rm_cmd(int argc, char **argv);
 void path_usage(void);
 array* path_get_all(void);
 int path_init(void);
-void path_save(array *paths);
+int path_save(path p);
 path* path_find(char name[]);
+char* path_get_path(char path[]);
+int path_rm_path(path p);
 
-extern char pathFilePath[128];
-#define PATH_FILE "paths"
-#define PATH_PRINT_FORMAT "%s : %s\n"
+extern char pathDirPath[128];
+#define PATH_DIR "paths"
+
+#define UNEXISTING_PATH_E "Unexisting path"
+#define EXISTING_PATH_E  "Path already exists"
 
 #endif

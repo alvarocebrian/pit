@@ -33,16 +33,14 @@ int path_cmd(int argc, char **argv) {
     return 0;
 }
 
-char pathFilePath[128];
+char pathDirPath[128];
 int path_init(void) {
-    sprintf(pathFilePath, "%s/%s", PIT_PATH, PATH_FILE);
+    sprintf(pathDirPath, "%s/%s", PIT_PATH, PATH_DIR);
 
-    // Create path file if it does not exists
-    if(file_exists(pathFilePath) != 1) {
-        if(create_file(pathFilePath) == 0) {
-            fprint(pathFilePath, "[0]\n");
-        } else {
-            error(UNEXP_E);
+    // Create path dir if it does not exists
+    if (dir_exists(pathDirPath) != true) {
+        if(_create_dir(pathDirPath) != 0) {
+            e_error(UNEXP_E);
         }
     }
 }
@@ -50,62 +48,43 @@ int path_init(void) {
 // Subcommands
 
 int path_list_cmd(int argc, char **argv) {
-    array *paths = path_get_all();
-
-    path *p;
-    for (int i = 0; i < array_length(paths); i++) {
-        p = array_get(paths, i);
-        printf("%s\t%s\n", p->name, p->path);
-    }
+    printd(pathDirPath);
 
     return 0;
 };
 
 int path_find_cmd(int argc, char **argv) {
 
-    if (argc) {
-        array *paths = path_get_all();
-
-        path *p;
-        for (int i = 0; i < array_length(paths); i++) {
-            p = array_get(paths, i);
-            if(!(strcmp(argv[0], p->name))) {
-                printf("%s\n", p->path);
-                break;
-            }
+    if (argc == 1) {
+        // Find file
+        path *p = path_find(argv[0]);
+        if (p != NULL) {
+            printf("%s\n", p->path);
         }
-
-        return 0;
     } else {
         error(INVALID_NUM_ARGS_E);
         path_usage();
 
         return 1;
     }
+
+    return 0;
 }
 
 int path_add_cmd(int argc, char **argv) {
+    path p;
+
     if(argc == 2) {
-        // TODO Check the path does not exists yet
+        // Check path does not exists
+        if (path_find(argv[0]) == NULL) {
+            strcpy(p.name, argv[0]);
+            //TODO Add string wrapping for avoiding spaces in paths
+            strcpy(p.path, argv[1]);
 
-        // TODO Add check for avoiding invalid paths
-
-        array *paths = path_get_all();
-
-        // Create new path
-        path p;
-        strcpy(p.name, argv[0]);
-        //TODO Add string wrapping for avoiding spaces in paths
-        strcpy(p.path, argv[1]);
-
-        // Add new path to the array
-        array_push(paths, &p);
-
-        // Store paths to file
-        path_save(paths);
-
-        return 0;
-
+            path_save(p);
+        } else {
+            e_error(EXISTING_PATH_E);
+        }
     } else {
         error(INVALID_NUM_ARGS_E);
         path_usage();
@@ -115,17 +94,16 @@ int path_add_cmd(int argc, char **argv) {
 }
 
 int path_edit_cmd(int argc, char **argv) {
-    if (argc == 2) {
-        array *paths = path_get_all();
+    path *p;
 
-        path *p;
-        for (int i = 0; i < array_length(paths); i++) {
-            p = array_get(paths, i);
-            if (!(strcmp(argv[0], p->name))) {
-                strcpy(p->path, argv[1]);
-                path_save(paths);
-                break;
-            }
+    if (argc == 2) {
+        // Check path does not exists
+        if ((p = path_find(argv[0])) != NULL) {
+            strcpy(p->path, argv[1]);
+
+            path_save(*p);
+        } else {
+            e_error(UNEXISTING_PATH_E);
         }
 
         return 0;
@@ -138,20 +116,13 @@ int path_edit_cmd(int argc, char **argv) {
 }
 
 int path_rm_cmd(int argc, char **argv) {
+    path *p;
+
     if (argc == 1) {
-        array *paths = path_get_all();
-
-        path *p;
-        for (int i = 0; i < array_length(paths); i++) {
-            p = array_get(paths, i);
-            if (!(strcmp(argv[0], p->name))) {
-                free(array_remove(paths, i));
-                path_save(paths);
-                break;
-            }
+        if ((p = path_find(argv[0])) != NULL) {
+            // Remove path file
+            return 0;
         }
-
-        return 0;
     } else {
         error("Number of arguments non valid\n");
         path_usage();
@@ -162,21 +133,18 @@ int path_rm_cmd(int argc, char **argv) {
 
 // Help functions
 
-void path_save(array *paths) {
-    FILE *file = fopen(pathFilePath, "w");
+int path_save(path p) {
+    FILE *pathFile;
 
-    if (file != NULL) {
-        // Print number of paths
-        fprintf(file, "[%d]\n", array_length(paths));
+    char *pathFilePath = path_get_path(p.name);
+    if ((pathFile= fopen(pathFilePath, "w")) != NULL) {
+        fputs(p.path, pathFile);
+        fclose(pathFile);
 
-        // Print paths
-        path *p;
-        for (int i = 0; i < array_length(paths); ++i)
-        {
-            p = array_get(paths, i);
-            fprintf(file, PATH_PRINT_FORMAT, p->name, p->path);
-        }
+        return 0;
     }
+
+    return 1;
 }
 
 void path_usage(void) {
@@ -194,45 +162,49 @@ void path_usage(void) {
     );
 }
 
-array* path_get_all(void) {
-    FILE *file;
-    int nAlias;
-    array *paths;
-    path *p;
-
-    sprintf(pathFilePath, "%s/%s", PIT_PATH, PATH_FILE);
-    file = fopen(pathFilePath, "r");
-    if (file != NULL) {
-        // Read number of paths and initialize array
-        fscanf(file,"[%d]\n", &nAlias);
-        paths = array_init_with_size(nAlias);
-
-        // Read paths to path struct
-        int i;
-        path *p;
-        for (i = 0; i < nAlias; i++) {
-            p = malloc(sizeof(path));
-            fscanf(file, PATH_PRINT_FORMAT, p->name, p->path);
-            array_push(paths, p);
-        }
-        fclose(file);
-    } else {
-        e_error("Unknown error");
-    }
-
-    return paths;
-}
-
 path* path_find(char name[]) {
-    array *paths = path_get_all();
-    path *p;
 
-    for(int i = 0; array_length(paths); i++) {
-        p = array_get(paths, i);
-        if (!(strcmp(name, p->name))) {
-            return p;
+    char *pathFilePath = path_get_path(name);
+    FILE *pathFile;
+    path *p = malloc(sizeof(path));
+
+    if (pathFilePath != NULL) {
+        if (file_exists(pathFilePath)) {
+
+            if ((pathFile = fopen(pathFilePath, "r"))) {
+                strcpy(p->name, name);
+                fgets(p->path, 128, pathFile);
+
+
+                return p;
+            }
         }
     }
 
     return NULL;
+}
+
+char* path_get_path(char path[]) {
+    char *pathPath;
+
+    if (is_valid_filename(path) == true) {
+        pathPath = calloc(128, sizeof(char));
+
+            // Todo sanitize cmd to avoid go out of the dir
+            sprintf(pathPath, "%s/%s", pathDirPath, path);
+
+            return pathPath;
+    }
+
+    return NULL;
+}
+
+int path_rm_path(path p) {
+    char *pathPath = path_get_path(p.name);
+
+    if (file_exists(pathPath) == true) {
+        remove_file(pathPath);
+    } else {
+        e_error(UNEXISTING_PATH_E);
+    }
 }

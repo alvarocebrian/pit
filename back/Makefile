@@ -13,6 +13,8 @@ cleanall:
 install:
 	cp bin/pit $(INSTALL)
 
+uninstall:
+	rm $(INSTALL)/pit
 
 
 
