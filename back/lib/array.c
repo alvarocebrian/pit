@@ -13,7 +13,7 @@ array *array_init () {
 
 array *array_init_with_size (unsigned int size) {
 	array *self = malloc(sizeof(array));
-	size = size < 0 ? 1 : size;
+	size = size;
 
 	self->refs = 1;
 	self->length = 0;

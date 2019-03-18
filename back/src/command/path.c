@@ -1,4 +1,4 @@
-    #include "path.h"
+#include "path.h"
 #include "command.h"
 #include "directory.h"
 #include "error.h"
@@ -48,7 +48,24 @@ int path_init(void) {
 // Subcommands
 
 int path_list_cmd(int argc, char **argv) {
-    printd(pathDirPath);
+    char *pathFilePath;
+    FILE *pathFile;
+    char *pathName;
+    char pathPath[128];
+
+    array *paths = ls(pathDirPath);
+
+    for (int i = 0; i < array_length(paths); i++) {
+        pathName = (char*) array_get(paths, i);
+        if (strcmp(".", pathName) && strcmp("..", pathName)) {
+            pathFilePath = path_get_path(pathName);
+            if ((pathFile = fopen(pathFilePath, "r")) != NULL) {
+                printf("%s\t%s\n", pathName, fgets(pathPath, 128, pathFile));
+                fclose(pathFile);
+            }
+        }
+    }
+
 
     return 0;
 };
@@ -120,8 +137,10 @@ int path_rm_cmd(int argc, char **argv) {
 
     if (argc == 1) {
         if ((p = path_find(argv[0])) != NULL) {
-            // Remove path file
+            remove(path_get_path(p->name));
             return 0;
+        } else {
+            e_error(UNEXISTING_PATH_E);
         }
     } else {
         error("Number of arguments non valid\n");
@@ -184,16 +203,15 @@ path* path_find(char name[]) {
     return NULL;
 }
 
-char* path_get_path(char path[]) {
+char* path_get_path(char *pathName) {
     char *pathPath;
 
-    if (is_valid_filename(path) == true) {
-        pathPath = calloc(128, sizeof(char));
+    if (is_valid_filename(pathName) == true) {
+        pathPath = malloc(128 * sizeof(char));
 
-            // Todo sanitize cmd to avoid go out of the dir
-            sprintf(pathPath, "%s/%s", pathDirPath, path);
+        sprintf(pathPath, "%s/%s", pathDirPath, pathName);
 
-            return pathPath;
+        return pathPath;
     }
 
     return NULL;

@@ -20,10 +20,10 @@ int dir_exists(const char path[]) {
 }
 
 int printd(const char path[]) {
-    array * elements = ls(path);
+    array *elements = ls(path);
 
-    char * element;
-    for(int i = 0; i < array_length(elements); i++) {
+    char *element;
+    for (int i = 0; i < array_length(elements); i++) {
         element = array_get(elements, i);
         if (strcmp(".", element) && strcmp("..", element))
             printf("%s\t", element);
@@ -39,8 +39,7 @@ array* ls(const char path[]) {
     struct dirent *d;
     array *elements;
 
-    dir = opendir(path);
-    if (dir) {
+     if (dir = opendir(path)) {
         elements = array_init();
         while ((d = readdir(dir)) != NULL)
         {
