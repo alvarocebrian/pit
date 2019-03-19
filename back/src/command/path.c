@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <errno.h>
+#include <dirent.h>
 
 int path_cmd(int argc, char **argv) {
     static cmd subcommands[] = {
@@ -48,24 +49,27 @@ int path_init(void) {
 // Subcommands
 
 int path_list_cmd(int argc, char **argv) {
-    char *pathFilePath;
-    FILE *pathFile;
-    char *pathName;
-    char pathPath[128];
+    char *pathName, *pathFilePath, *pathPath = NULL;
+    FILE *pathFile = NULL;
 
-    array *paths = ls(pathDirPath);
-
-    for (int i = 0; i < array_length(paths); i++) {
-        pathName = (char*) array_get(paths, i);
-        if (strcmp(".", pathName) && strcmp("..", pathName)) {
-            pathFilePath = path_get_path(pathName);
-            if ((pathFile = fopen(pathFilePath, "r")) != NULL) {
-                printf("%s\t%s\n", pathName, fgets(pathPath, 128, pathFile));
-                fclose(pathFile);
+    DIR *dir;
+    struct dirent *d;
+    if (dir = opendir(pathDirPath)) {
+        while ((d = readdir(dir)) != NULL) {
+            pathName = d->d_name;
+            if (strcmp(pathName, ".") && strcmp(pathName, "..")){
+                pathFilePath = path_get_path(pathName);
+                if ((pathFile = fopen(pathFilePath, "r")) != NULL) {
+                    pathPath = calloc(128, sizeof(char));
+                    fgets(pathPath, 128, pathFile);
+                    printf("%s\t%s\n", pathName, pathPath);
+                    fclose(pathFile);
+                }
             }
-        }
-    }
 
+        }
+        closedir(dir);
+    }
 
     return 0;
 };
@@ -182,7 +186,6 @@ void path_usage(void) {
 }
 
 path* path_find(char name[]) {
-
     char *pathFilePath = path_get_path(name);
     FILE *pathFile;
     path *p = malloc(sizeof(path));
@@ -204,12 +207,12 @@ path* path_find(char name[]) {
 }
 
 char* path_get_path(char *pathName) {
-    char *pathPath;
+    char *pathPath = NULL;
 
     if (is_valid_filename(pathName) == true) {
-        pathPath = malloc(128 * sizeof(char));
+        pathPath = malloc(128 *  sizeof(char));
 
-        sprintf(pathPath, "%s/%s", pathDirPath, pathName);
+        snprintf(pathPath, 128, "%s/%s", pathDirPath, pathName);
 
         return pathPath;
     }
