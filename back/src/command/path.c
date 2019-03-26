@@ -8,6 +8,9 @@
 #include <malloc.h>
 #include <errno.h>
 #include <dirent.h>
+#include <getopt.h>
+#include <string.h>
+
 
 int path_cmd(int argc, char **argv) {
     static cmd subcommands[] = {
@@ -51,6 +54,14 @@ int path_init(void) {
 int path_list_cmd(int argc, char **argv) {
     char *pathName, *pathFilePath, *pathPath = NULL;
     FILE *pathFile = NULL;
+    int fName = 0;
+
+    // Parse options
+    for (int i = 0; i < argc; i++ ) {
+        if (! (strcmp(argv[i], "-n") && strcmp(argv[i], "--name"))) {
+            fName = 1;
+        }
+    }
 
     DIR *dir;
     struct dirent *d;
@@ -62,13 +73,23 @@ int path_list_cmd(int argc, char **argv) {
                 if ((pathFile = fopen(pathFilePath, "r")) != NULL) {
                     pathPath = calloc(128, sizeof(char));
                     fgets(pathPath, 128, pathFile);
-                    printf("%s\t%s\n", pathName, pathPath);
+
+                    if (fName) {
+                        printf("%s\t", pathName);
+                    } else {
+                        printf("%s\t%s\n", pathName, pathPath);
+                    }
+
                     fclose(pathFile);
                 }
             }
 
         }
         closedir(dir);
+    }
+
+    if (fName) {
+        printf("\n");
     }
 
     return 0;
