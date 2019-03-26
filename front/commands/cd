@@ -8,7 +8,7 @@ function cd() {
     command cd $*
 }
 
-function __pit_cd_completion()
+function __cd_pit()
 {
     local cur prev words cword
     _get_comp_words_by_ref cur prev words cword
@@ -21,4 +21,4 @@ function __pit_cd_completion()
     done;
 }
 
-complete -F __pit_cd_completion cd
+complete -F __cd_pit cd
