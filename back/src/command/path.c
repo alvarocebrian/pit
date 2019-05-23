@@ -2,6 +2,8 @@
 #include "command.h"
 #include "directory.h"
 #include "error.h"
+#include "common.h"
+#include "array.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -11,18 +13,48 @@
 #include <getopt.h>
 #include <string.h>
 
+typedef struct str_path {
+    // path name
+    char name[128];
 
-int path_cmd(int argc, char **argv) {
-    static cmd subcommands[] = {
+    // path
+    char path[256];
+} path;
+
+int path_list_cmd(int argc, char **argv);
+int path_find_cmd(int argc, char **argv);
+int path_add_cmd(int argc, char **argv);
+int path_edit_cmd(int argc, char **argv);
+int path_rm_cmd(int argc, char **argv);
+
+void path_usage(void);
+array* path_get_all(void);
+int path_init(void);
+int path_save(path p);
+path* path_find(char name[]);
+char* path_get_path(char path[]);
+int path_rm_path(path p);
+
+char *pathDirPath;
+#define PATH_DIR "paths"
+
+#define UNEXISTING_PATH_E "Unexisting path"
+#define EXISTING_PATH_E  "Path already exists"
+
+// Subcommands
+static cmd subcommands[] = {
         {"list", path_list_cmd },
         {"find", path_find_cmd},
         {"add", path_add_cmd },
         {"edit", path_edit_cmd},
-        {"rm", path_rm_cmd }
-    };
+        {"rm", path_rm_cmd },
+        {0}
+};
+
+int path_cmd(int argc, char **argv) {
+
 
     if(argc) {
-        path_init();
         cmd *subcommand = getCommand(argv[0], subcommands);
         if(subcommand) {
             subcommand->run(--argc, ++argv);
@@ -37,9 +69,8 @@ int path_cmd(int argc, char **argv) {
     return 0;
 }
 
-char pathDirPath[128];
 int path_init(void) {
-    sprintf(pathDirPath, "%s/%s", PIT_PATH, PATH_DIR);
+    asprintf(&pathDirPath, "%s/%s", PIT_PATH, PATH_DIR);
 
     // Create path dir if it does not exists
     if (dir_exists(pathDirPath) != true) {
@@ -47,6 +78,8 @@ int path_init(void) {
             e_error(UNEXP_E);
         }
     }
+
+    return true;
 }
 
 // Subcommands

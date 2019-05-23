@@ -3,23 +3,33 @@
 #include "common.h"
 #include "directory.h"
 #include "error.h"
+#include "array.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <errno.h>
 
+int cmd_list_cmd(int argc, char **argv);
+int cmd_add_cmd(int argc, char **argv);
+int cmd_edit_cmd(int argc, char **argv);
+int cmd_rm_cmd(int argc, char **argv);
+void cmd_usage(void);
+
+char *cmdDirPath;
+#define CMD_DIR "cmd"
+
+
+// Subcommands
+static cmd subcommands[] = {
+    {"list", cmd_list_cmd},
+    {"add", cmd_add_cmd},
+    {"edit", cmd_edit_cmd},
+    {"rm", cmd_rm_cmd},
+    {0}
+};
 
 int cmd_cmd(int argc, char **argv) {
-    static cmd subcommands[] = {
-        {"list", cmd_list_cmd},
-        {"add", cmd_add_cmd},
-        {"edit", cmd_edit_cmd},
-        {"rm", cmd_rm_cmd}
-
-
-    };
-
     if (argc) {
         cmd_init();
 
@@ -39,10 +49,9 @@ int cmd_cmd(int argc, char **argv) {
     return 0;
 }
 
-char cmdDirPath[128];
 int cmd_init(void) {
     // Create the path for the cmd directory
-    sprintf(cmdDirPath, "%s/%s", PIT_PATH, CMD_DIR);
+    asprintf(&cmdDirPath, "%s/%s", PIT_PATH, CMD_DIR);
 
     // Create cmd directory if it does not exists
     if (dir_exists(cmdDirPath) != true) {
@@ -53,6 +62,7 @@ int cmd_init(void) {
 
     // TODO Check there is an editor installed
 }
+
 
 //Subcommmands
 
@@ -68,8 +78,8 @@ int cmd_add_cmd(int argc, char **argv) {
 
         // Create the file for storing the command
         if (create_file(cmdPath) == 0) {
-            char openCmd [128];
-            sprintf(openCmd, "editor %s", cmdPath);
+            char *openCmd;
+            asprintf(&openCmd, "editor %s", cmdPath);
             system(openCmd);
             chmod(cmdPath, 0750);
 
@@ -90,13 +100,13 @@ int cmd_edit_cmd(int argc, char **argv) {
     if (argc == 1) {
         char *cmdPath = cmd_get_path(argv[0]);
         if (file_exists(cmdPath) == true) {
-            char openCmd [128];
-            sprintf(openCmd, "editor %s", cmdPath);
+            char *openCmd;
+            asprintf(&openCmd, "editor %s", cmdPath);
             system(openCmd);
 
             return 0;
         } else {
-            e_error(UNEXISTING_CMD_E);
+            e_error(UNKNOWN_CMD_E);
         }
     } else {
         error(INVALID_NUM_ARGS_E);
@@ -113,7 +123,7 @@ int cmd_rm_cmd(int argc, char **argv) {
         if (file_exists(cmdPath) == true) {
             remove_file(cmdPath);
         } else {
-            e_error(UNEXISTING_CMD_E);
+            e_error(UNKNOWN_CMD_E);
         }
     } else {
         error(INVALID_NUM_ARGS_E);
@@ -125,7 +135,6 @@ int cmd_rm_cmd(int argc, char **argv) {
 
 
 // Help functions
-
 void cmd_usage(void) {
     fprintf(stderr,
         "usage: pit cmd <options>\n"
@@ -145,10 +154,8 @@ char* cmd_get_path(char cmd[]) {
     char * command;
 
     if (is_valid_filename(cmd) == true) {
-        cmdPath = calloc(128, sizeof(char));
-
-            // Todo sanitize cmd to avoid go out of the dir
-            sprintf(cmdPath, "%s/%s", cmdDirPath, cmd);
+        // Todo sanitize cmd to avoid go out of the dir
+        asprintf(&cmdPath, "%s/%s", cmdDirPath, cmd);
 
             return cmdPath;
     }

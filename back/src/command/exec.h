@@ -1,5 +1,6 @@
 #ifndef _EXEC_H_
 #define _EXEC_H_
 
+int exec_init();
 
 #endif

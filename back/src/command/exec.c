@@ -11,8 +11,12 @@ int exec_cmd(int argc, char **argv) {
     if(file_exists(cmd) == true) {
         system(cmd);
     } else {
-        e_error(UNEXISTING_CMD_E);
+        e_error(UNKNOWN_CMD_E);
     }
+}
+
+int exec_init() {
+    return cmd_init();
 }
 
 void exec_usage(void) {

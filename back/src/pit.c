@@ -3,18 +3,23 @@
 #include "directory.h"
 #include "common.h"
 #include "error.h"
+
+// Commands
 #include "path.h"
 #include "cmd.h"
+#include "exec.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
 
+// Registered commands
 static cmd commands[] = {
     {"path", path_cmd, path_init},
     {"cmd", cmd_cmd, cmd_init},
-    {"exec", exec_cmd}
+    {"exec", exec_cmd, exec_init},
+    {0}
 };
 
 int main(int argc, char **argv) {
@@ -24,7 +29,7 @@ int main(int argc, char **argv) {
 
         // Execute the command
         struct cmd_struct *command = getCommand(argv[1], commands);
-        if(command) {
+        if (command && command->init()) {
             argc -= 2;
             argv += 2;
             command->run(argc, argv);
@@ -50,10 +55,10 @@ void pit_usage(void) {
     );
 }
 
-char PIT_PATH[128];
+
 void pit_init(void) {
     // Init pit path
-    sprintf(PIT_PATH,"%s/%s", getenv("HOME"), PIT_DIR);
+    asprintf(&PIT_PATH,"%s/%s", getenv("HOME"), PIT_DIR);
 
     // Create pit directory if it does not exists yet
     if (dir_exists(PIT_PATH) != true) {
@@ -61,14 +66,6 @@ void pit_init(void) {
             char err[50];
             sprintf(err, "Can't create pit directory at %s", PIT_PATH);
             e_error(err);
-        }
-    }
-
-    // Init commands
-    cmd *command;
-    for(command = commands; command->name != NULL; command++) {
-        if(command->init) {
-            command->init();
         }
     }
 }

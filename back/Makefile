@@ -3,7 +3,7 @@ HEADS = $(wildcard src/ src/command/ lib/)
 INSTALL = /usr/local/bin/
 
 make:
-	gcc -g $(SRCS) -I src/ -I src/command/ -I lib/ -o bin/pit
+	gcc -g $(SRCS) -I src/ -I src/command/ -I lib/ -o bin/pit -D _GNU_SOURCE
 
 all: make install
 
