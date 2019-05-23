@@ -149,6 +149,12 @@ void cmd_usage(void) {
     );
 }
 
+/**
+ * Return the path for a command
+ *
+ * @param cmd Command name
+ * @return The path for a command (commands path + command)
+ */
 char* cmd_get_path(char cmd[]) {
     char *cmdPath;
     char * command;
@@ -161,12 +167,4 @@ char* cmd_get_path(char cmd[]) {
     }
 
     return NULL;
-}
-
-array* cmd_get_all() {
-    array *cmds;
-
-    cmds = ls(cmdDirPath);
-
-    return cmds;
 }

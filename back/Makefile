@@ -1,5 +1,4 @@
 SRCS = $(wildcard src/*.c src/command/*.c lib/*.c)
-HEADS = $(wildcard src/ src/command/ lib/)
 INSTALL = /usr/local/bin/
 
 make:

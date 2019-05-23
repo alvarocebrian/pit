@@ -154,7 +154,11 @@ int path_add_cmd(int argc, char **argv) {
         if (path_find(argv[0]) == NULL) {
             strcpy(p.name, argv[0]);
             //TODO Add string wrapping for avoiding spaces in paths
-            strcpy(p.path, argv[1]);
+            if (strcmp(argv[0], ".")) {
+                strcpy(p.path, get_current_dir_name());
+            } else {
+                strcpy(p.path, argv[1]);
+            }
 
             path_save(p);
         } else {
