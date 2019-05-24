@@ -52,8 +52,6 @@ static cmd subcommands[] = {
 };
 
 int path_cmd(int argc, char **argv) {
-
-
     if(argc) {
         cmd *subcommand = getCommand(argv[0], subcommands);
         if(subcommand) {
@@ -153,12 +151,7 @@ int path_add_cmd(int argc, char **argv) {
         // Check path does not exists
         if (path_find(argv[0]) == NULL) {
             strcpy(p.name, argv[0]);
-            //TODO Add string wrapping for avoiding spaces in paths
-            if (strcmp(argv[0], ".")) {
-                strcpy(p.path, get_current_dir_name());
-            } else {
-                strcpy(p.path, argv[1]);
-            }
+            strcpy(p.path, realpath(argv[1], NULL));
 
             path_save(p);
         } else {
