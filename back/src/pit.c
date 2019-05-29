@@ -1,4 +1,3 @@
-#include "pit.h"
 #include "command.h"
 #include "directory.h"
 #include "common.h"
@@ -9,6 +8,7 @@
 #include "cmd.h"
 #include "exec.h"
 
+// Sytem Libraries
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
@@ -21,6 +21,11 @@ static cmd commands[] = {
     {"exec", exec_cmd, exec_init},
     {0}
 };
+
+// Functions
+void pit_usage(void);
+void pit_init(void);
+
 
 int main(int argc, char **argv) {
     if(argc > 1) {

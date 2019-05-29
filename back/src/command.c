@@ -1,10 +1,13 @@
 #include "command.h"
 #include <string.h>
 
-struct cmd_struct *getCommand(const char s[], cmd *commands)
+/**
+ * Find and retrun a command by name
+ */
+struct cmd_struct *getCommand(const char name[], cmd *commands)
 {
     for (cmd *c = commands; c->name != NULL; c++) {
-        if (!strcmp(s, c->name))
+        if (!strcmp(name, c->name))
             return c;
     };
 

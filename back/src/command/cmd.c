@@ -3,11 +3,8 @@
 #include "common.h"
 #include "directory.h"
 #include "error.h"
-#include "array.h"
 
 #include <string.h>
-#include <stdio.h>
-#include <sys/stat.h>
 #include <errno.h>
 
 int cmd_list_cmd(int argc, char **argv);
