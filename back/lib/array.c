@@ -115,3 +115,9 @@ void array_decref (array *self) {
 	free(self->buffer);
 	free(self);
 }
+
+// Custom
+
+void array_sort (array *self, int (*sort)(const void *, const void*)) {
+	qsort(self->buffer, self->length, sizeof(void *), sort);
+}

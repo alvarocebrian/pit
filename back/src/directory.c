@@ -8,6 +8,10 @@
 #include <string.h>
 #include <unistd.h>
 
+// Private functions
+static int sort(const void *, const void*);
+
+
 int dir_exists(const char path[]) {
     DIR* dir;
     if ((dir = opendir(path))) {
@@ -48,8 +52,15 @@ array* ls(const char path[]) {
         closedir(dir);
     }
 
+    array_sort(elements, sort);
+
     return elements;
 }
+
+static int sort(const void *a, const void *b) {
+    return strcmp(*(const char**)a, *(const char**)b);
+}
+
 
 int file_exists(const char path[]) {
     FILE *file;

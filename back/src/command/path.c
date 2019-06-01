@@ -34,6 +34,9 @@ int path_save(path p);
 path* path_find(char name[]);
 char* path_get_path(char path[]);
 int path_rm_path(path p);
+array* path_get_all(void);
+static int sort(const void *a, const void *b);
+
 
 char *pathDirPath;
 #define PATH_DIR "paths"
@@ -83,9 +86,9 @@ int path_init(void) {
 // Subcommands
 
 int path_list_cmd(int argc, char **argv) {
-    char *pathName, *pathFilePath, *pathPath = NULL;
-    FILE *pathFile = NULL;
     int fName = 0;
+    array *paths;
+    path *p;
 
     // Parse options
     for (int i = 0; i < argc; i++ ) {
@@ -94,29 +97,16 @@ int path_list_cmd(int argc, char **argv) {
         }
     }
 
-    DIR *dir;
-    struct dirent *d;
-    if (dir = opendir(pathDirPath)) {
-        while ((d = readdir(dir)) != NULL) {
-            pathName = d->d_name;
-            if (strcmp(pathName, ".") && strcmp(pathName, "..")){
-                pathFilePath = path_get_path(pathName);
-                if ((pathFile = fopen(pathFilePath, "r")) != NULL) {
-                    pathPath = calloc(128, sizeof(char));
-                    fgets(pathPath, 128, pathFile);
+    paths = path_get_all();
+    array_sort(paths, sort);
 
-                    if (fName) {
-                        printf("%s\t", pathName);
-                    } else {
-                        printf("%s\t%s\n", pathName, pathPath);
-                    }
-
-                    fclose(pathFile);
-                }
-            }
-
+    for (int i = 0; i < paths->length; i ++) {
+        p = array_get(paths, i);
+        if (fName) {
+            printf("%s\t", p->name);
+        } else {
+            printf("%s\t%s\n", p->name, p->path);
         }
-        closedir(dir);
     }
 
     if (fName) {
@@ -257,6 +247,10 @@ path* path_find(char name[]) {
     return NULL;
 }
 
+/**
+ * Get the real path for a given named path
+ */
+
 char* path_get_path(char *pathName) {
     char *pathPath = NULL;
 
@@ -279,4 +273,40 @@ int path_rm_path(path p) {
     } else {
         e_error(UNEXISTING_PATH_E);
     }
+}
+
+/**
+ * Get an array with all paths
+ */
+array* path_get_all(void) {
+    path *p;
+    DIR *dir;
+    struct dirent *d;
+    char * pathFilePath;
+    FILE *pathFile = NULL;
+
+    array *paths = array_init();
+
+    if (dir = opendir(pathDirPath)) {
+        while ((d = readdir(dir)) != NULL) {
+            p = malloc(sizeof(path));
+            strcpy(p->name, d->d_name);
+            if (strcmp(p->name, ".") && strcmp(p->name, "..")){
+                pathFilePath = path_get_path(p->name);
+                if ((pathFile = fopen(pathFilePath, "r")) != NULL) {
+                    fgets(p->path, 128, pathFile);
+
+                    fclose(pathFile);
+                    array_push(paths, p);
+                }
+            }
+        }
+        closedir(dir);
+    }
+
+    return paths;
+}
+
+static int sort(const void *a, const void *b) {
+    return strcmp((*(const path**)a)->name, (*(const path**)b)->name);
 }

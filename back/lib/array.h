@@ -33,6 +33,8 @@ void *array_pop (array *self);
 void *array_incref (array *self);
 void array_decref (array *self);
 
+void array_sort (array *self, int (*sort)(const void *, const void*));
+
 #define array_length(self) self->length
 
 #endif
