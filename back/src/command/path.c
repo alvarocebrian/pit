@@ -36,7 +36,8 @@ char* path_get_path(char path[]);
 int path_rm_path(path p);
 array* path_get_all(void);
 static int sort(const void *a, const void *b);
-
+int get_max_length(array *paths);
+void path_print(array *paths, int fName);
 
 char *pathDirPath;
 #define PATH_DIR "paths"
@@ -88,7 +89,6 @@ int path_init(void) {
 int path_list_cmd(int argc, char **argv) {
     int fName = 0;
     array *paths;
-    path *p;
 
     // Parse options
     for (int i = 0; i < argc; i++ ) {
@@ -99,19 +99,7 @@ int path_list_cmd(int argc, char **argv) {
 
     paths = path_get_all();
     array_sort(paths, sort);
-
-    for (int i = 0; i < paths->length; i ++) {
-        p = array_get(paths, i);
-        if (fName) {
-            printf("%s\t", p->name);
-        } else {
-            printf("%s\t%s\n", p->name, p->path);
-        }
-    }
-
-    if (fName) {
-        printf("\n");
-    }
+    path_print(paths, fName);
 
     return 0;
 };
@@ -250,7 +238,6 @@ path* path_find(char name[]) {
 /**
  * Get the real path for a given named path
  */
-
 char* path_get_path(char *pathName) {
     char *pathPath = NULL;
 
@@ -309,4 +296,36 @@ array* path_get_all(void) {
 
 static int sort(const void *a, const void *b) {
     return strcmp((*(const path**)a)->name, (*(const path**)b)->name);
+}
+
+int path_get_max_length(array *paths) {
+    int max = 0;
+    path *p;
+
+    for (int i = 0; i < paths->length; i++ ) {
+        p = array_get(paths, i);
+        if (strlen(p->name) > max) {
+            max = strlen(p->name);
+        }
+    }
+
+    return max;
+}
+
+void path_print(array *paths, int fName) {
+    path *p;
+    int align = (path_get_max_length(paths) + 8) / 8 * 8;
+
+    for (int i = 0; i < paths->length; i ++) {
+        p = array_get(paths, i);
+        if (fName) {
+            printf("%s\t", p->name);
+        } else {
+            printf("%-*s%s\n", align, p->name, p->path);
+        }
+    }
+
+    if (fName) {
+        printf("\n");
+    }
 }
