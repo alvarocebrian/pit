@@ -61,7 +61,6 @@ static int sort(const void *a, const void *b) {
     return strcmp(*(const char**)a, *(const char**)b);
 }
 
-
 int file_exists(const char path[]) {
     FILE *file;
     if ((file = fopen(path, "r")))

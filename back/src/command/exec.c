@@ -6,13 +6,19 @@
 #include <stdlib.h>
 
 int exec_cmd(int argc, char **argv) {
-    // Look for command
-    char *cmd = cmd_get_path(argv[0]);
-    if(file_exists(cmd) == true) {
-        system(cmd);
-    } else {
-        e_error(UNKNOWN_CMD_E);
+    if (argc > 0) {
+        // Look for command
+        char *cmd = cmd_get_path(argv[0]);
+        if(file_exists(cmd) == true) {
+            system(cmd);
+        } else {
+            e_error(UNKNOWN_CMD_E);
+        }
+
+        return 0;
     }
+
+    return 1;
 }
 
 int exec_init() {
