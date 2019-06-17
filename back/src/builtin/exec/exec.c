@@ -5,8 +5,11 @@
 
 #include <stdlib.h>
 
-int exec_cmd(int argc, char **argv) {
-    if (argc > 0) {
+int main(int argc, char **argv) {
+    argc--;
+    argv++;
+
+    if (argc) {
         // Look for command
         char *cmd = cmd_get_path(argv[0]);
         if(file_exists(cmd) == true) {

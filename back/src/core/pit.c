@@ -61,8 +61,6 @@ void pit_usage(void) {
 }
 
 void pit_init(void) {
-    // Init pit path
-    asprintf(&PIT_PATH,"%s/%s", getenv("HOME"), PIT_DIR);
 
     // Create pit directory if it does not exists yet
     if (dir_exists(PIT_PATH) != true) {

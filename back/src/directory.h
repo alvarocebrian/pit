@@ -7,8 +7,6 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-void init_pit_directory(void);
-
 /**
  *  @return
  *      true on dir_exists
@@ -34,8 +32,8 @@ int printd(const char path[]);
 
 array* ls(const char path[]);
 
-#define create_dir mkdir(path, mode);
-#define _create_dir(path) mkdir(path, 0700)
+#define create_dir(path) mkdir(path, 0700)
+#define create_dir_m(path, mode) mkdir(path, mode)
 
 #define remove_file(path) unlink(path)
 

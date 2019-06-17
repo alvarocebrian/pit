@@ -1,5 +1,11 @@
 #include "command.h"
+#include "directory.h"
+#include "error.h"
+#include "common.h"
+
 #include <string.h>
+#include <stdio.h>
+
 
 /**
  * Find and retrun a command by name
@@ -12,4 +18,34 @@ struct cmd_struct *getCommand(const char name[], cmd *commands)
     };
 
     return NULL;
+}
+
+char *_getCommandDir(const char dir[])
+{
+    char *commandDir;
+
+    asprintf(&commandDir,"%s/%s/%s", getenv("HOME"), PIT_DIR , dir);
+
+    return commandDir;
+}
+
+/**
+ *  Create builtin command directory path
+ *
+ *  @param Command directory name
+ *  @return commandDir Command directory path
+ */
+char *_createCommandDir(const char dir[])
+{
+    // Get command dir
+    char *commandDir = _getCommandDir(dir);
+
+    // Create command dir if it does not exists
+    if (dir_exists(commandDir) != true) {
+        if(create_dir(commandDir) != 0) {
+            e_error(UNEXP_E);
+        }
+    }
+
+    return commandDir;
 }

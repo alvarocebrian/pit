@@ -12,7 +12,13 @@
 #define e_error(message) error(message); exit(1);
 
 // Error messages
+
+// The number of arguments is not the required
 #define INVALID_NUM_ARGS_E "Invalid number of arguments"
+
+// Unknown error
 #define UNEXP_E "Unexpected error"
+
+// Builtin (sub)command does not exists
 #define UNKNOWN_CMD_E "Unknown command"
 #endif

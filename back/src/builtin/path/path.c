@@ -1,4 +1,3 @@
-#include "path.h"
 #include "command.h"
 #include "directory.h"
 #include "error.h"
@@ -40,7 +39,7 @@ int get_max_length(array *paths);
 void path_print(array *paths, int fName);
 
 char *pathDirPath;
-#define PATH_DIR "paths"
+#define CMD_DIR "paths"
 
 #define UNEXISTING_PATH_E "Unexisting path"
 #define EXISTING_PATH_E  "Path already exists"
@@ -55,10 +54,10 @@ static cmd subcommands[] = {
         {0}
 };
 
-int path_cmd(int argc, char **argv) {
-    if(argc) {
+int main (int argc, char **argv) {
+    if (argc) {
         cmd *subcommand = getCommand(argv[0], subcommands);
-        if(subcommand) {
+        if (subcommand && path_init()) {
             subcommand->run(--argc, ++argv);
 
             return errno;
@@ -72,14 +71,7 @@ int path_cmd(int argc, char **argv) {
 }
 
 int path_init(void) {
-    asprintf(&pathDirPath, "%s/%s", PIT_PATH, PATH_DIR);
-
-    // Create path dir if it does not exists
-    if (dir_exists(pathDirPath) != true) {
-        if(_create_dir(pathDirPath) != 0) {
-            e_error(UNEXP_E);
-        }
-    }
+    pathDirPath = createCommandDir();
 
     return true;
 }
@@ -271,7 +263,6 @@ array* path_get_all(void) {
     struct dirent *d;
     char * pathFilePath;
     FILE *pathFile = NULL;
-
     array *paths = array_init();
 
     if (dir = opendir(pathDirPath)) {
