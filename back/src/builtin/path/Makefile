@@ -6,6 +6,7 @@ SRCS += ../../../lib/array.c
 INCLUDES = -I ../../
 INCLUDES += -I ../../../lib/
 
+BIN_DIRECTORY = ../../../bin
 BIN = pit-path
 
 # Debug flag
@@ -14,4 +15,4 @@ FLAGS = -g
 FLAGS += -D _GNU_SOURCE
 
 make:
-	gcc $(SRCS) $(INCLUDES) -o $(BIN) $(FLAGS)
+	gcc $(SRCS) $(INCLUDES) -o $(BIN_DIRECTORY)/$(BIN) $(FLAGS)

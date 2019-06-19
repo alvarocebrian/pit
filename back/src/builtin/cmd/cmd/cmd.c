@@ -1,8 +1,8 @@
-#include "cmd.h"
 #include "command.h"
 #include "common.h"
 #include "directory.h"
 #include "error.h"
+#include "core.h"
 
 #include <string.h>
 #include <errno.h>
@@ -26,12 +26,11 @@ static cmd subcommands[] = {
     {0}
 };
 
-int cmd_cmd(int argc, char **argv) {
-    if (argc) {
-        cmd_init();
+int main(int argc, char **argv) {
 
-        cmd *subcommand = getCommand(argv[0], subcommands);
-        if(subcommand) {
+    if (--argc) {
+        cmd *subcommand = getCommand((++argv)[0], subcommands);
+        if (subcommand && init()) {
             subcommand->run(--argc, ++argv);
 
             return errno;
@@ -44,20 +43,6 @@ int cmd_cmd(int argc, char **argv) {
     cmd_usage();
 
     return 0;
-}
-
-int cmd_init(void) {
-    // Create the path for the cmd directory
-    asprintf(&cmdDirPath, "%s/%s", PIT_PATH, CMD_DIR);
-
-    // Create cmd directory if it does not exists
-    if (dir_exists(cmdDirPath) != true) {
-        if(_create_dir(cmdDirPath) != 0) {
-            e_error(UNEXP_E);
-        }
-    }
-
-    // TODO Check there is an editor installed
 }
 
 
@@ -144,24 +129,4 @@ void cmd_usage(void) {
         "\tedit <cmd>   Edit a command\n"
         "\trm <cmd>     Remove a command\n"
     );
-}
-
-/**
- * Return the path for a command
- *
- * @param cmd Command name
- * @return The path for a command (commands path + command)
- */
-char* cmd_get_path(char cmd[]) {
-    char *cmdPath;
-    char * command;
-
-    if (is_valid_filename(cmd) == true) {
-        // Todo sanitize cmd to avoid go out of the dir
-        asprintf(&cmdPath, "%s/%s", cmdDirPath, cmd);
-
-            return cmdPath;
-    }
-
-    return NULL;
 }

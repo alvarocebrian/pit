@@ -1,17 +1,13 @@
-#include "cmd.h"
 #include "directory.h"
 #include "error.h"
 #include "command.h"
-
+#include "core.h"
 #include <stdlib.h>
 
-int main(int argc, char **argv) {
-    argc--;
-    argv++;
-
-    if (argc) {
+int main (int argc, char **argv) {
+    if (--argc && init()) {
         // Look for command
-        char *cmd = cmd_get_path(argv[0]);
+        char *cmd = cmd_get_path((++argv)[0]);
         if(file_exists(cmd) == true) {
             system(cmd);
         } else {
@@ -22,10 +18,6 @@ int main(int argc, char **argv) {
     }
 
     return 1;
-}
-
-int exec_init() {
-    return cmd_init();
 }
 
 void exec_usage(void) {

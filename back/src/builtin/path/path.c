@@ -55,8 +55,8 @@ static cmd subcommands[] = {
 };
 
 int main (int argc, char **argv) {
-    if (argc) {
-        cmd *subcommand = getCommand(argv[0], subcommands);
+    if (--argc) {
+        cmd *subcommand = getCommand((++argv)[0], subcommands);
         if (subcommand && path_init()) {
             subcommand->run(--argc, ++argv);
 

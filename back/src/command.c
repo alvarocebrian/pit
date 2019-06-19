@@ -20,6 +20,13 @@ struct cmd_struct *getCommand(const char name[], cmd *commands)
     return NULL;
 }
 
+/**
+ * Get command dir path
+ *
+ * @param dir Command directory name
+ * @return commandDir Command directory path
+ *
+ */
 char *_getCommandDir(const char dir[])
 {
     char *commandDir;
@@ -30,7 +37,7 @@ char *_getCommandDir(const char dir[])
 }
 
 /**
- *  Create builtin command directory path
+ *  Create builtin command directory if it does not exists
  *
  *  @param Command directory name
  *  @return commandDir Command directory path
@@ -48,4 +55,9 @@ char *_createCommandDir(const char dir[])
     }
 
     return commandDir;
+}
+
+void runCommand(const char *command, const char **params)
+{
+
 }
