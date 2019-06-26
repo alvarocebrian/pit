@@ -27,7 +27,6 @@ static cmd subcommands[] = {
 };
 
 int main(int argc, char **argv) {
-
     if (--argc) {
         cmd *subcommand = getCommand((++argv)[0], subcommands);
         if (subcommand && init()) {
@@ -40,7 +39,7 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    cmd_usage();
+    usage();
 
     return 0;
 }
@@ -72,7 +71,7 @@ int cmd_add_cmd(int argc, char **argv) {
 
     } else {
         error(INVALID_NUM_ARGS_E);
-        cmd_usage();
+        usage();
 
         exit(1);
     }
@@ -92,7 +91,7 @@ int cmd_edit_cmd(int argc, char **argv) {
         }
     } else {
         error(INVALID_NUM_ARGS_E);
-        cmd_usage();
+        usage();
 
         exit(1);
     }
@@ -109,7 +108,7 @@ int cmd_rm_cmd(int argc, char **argv) {
         }
     } else {
         error(INVALID_NUM_ARGS_E);
-        cmd_usage();
+        usage();
 
         exit(1);
     }
@@ -117,7 +116,7 @@ int cmd_rm_cmd(int argc, char **argv) {
 
 
 // Help functions
-void cmd_usage(void) {
+static void usage(void) {
     fprintf(stderr,
         "usage: pit cmd <options>\n"
         "\n"

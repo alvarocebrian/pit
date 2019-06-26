@@ -10,8 +10,11 @@
 // Print error
 #define error(message) fprintf(stderr, "%s\n", message)
 #define e_error(message) error(message); exit(1);
+#define e_usage_error(message) error(message);usage();exit(1);
 
+//
 // Error messages
+//
 
 // The number of arguments is not the required
 #define INVALID_NUM_ARGS_E "Invalid number of arguments"

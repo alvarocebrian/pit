@@ -59,5 +59,4 @@ char *_createCommandDir(const char dir[])
 
 void runCommand(const char *command, const char **params)
 {
-
 }
