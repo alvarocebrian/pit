@@ -20,7 +20,7 @@ int dir_exists(const char path[]);
  *      true on file_exists
  *      false on error or not existing file
  */
-int file_exists(const char path[]);
+int file_exists(const char *path);
 
 /**
  *  @return

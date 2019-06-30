@@ -12,7 +12,8 @@
 static int sort(const void *, const void*);
 
 
-int dir_exists(const char path[]) {
+int dir_exists(const char path[])
+{
     DIR* dir;
     if ((dir = opendir(path))) {
         closedir(dir);
@@ -23,7 +24,8 @@ int dir_exists(const char path[]) {
     return errno;
 }
 
-int printd(const char path[]) {
+int printd(const char path[])
+{
     array *elements = ls(path);
 
     char *element;
@@ -38,7 +40,8 @@ int printd(const char path[]) {
     return 0;
 }
 
-array* ls(const char path[]) {
+array* ls(const char path[])
+{
     DIR *dir;
     struct dirent *d;
     array *elements;
@@ -57,12 +60,15 @@ array* ls(const char path[]) {
     return elements;
 }
 
-static int sort(const void *a, const void *b) {
+static int sort(const void *a, const void *b)
+{
     return strcmp(*(const char**)a, *(const char**)b);
 }
 
-int file_exists(const char path[]) {
+int file_exists(const char *path)
+{
     FILE *file;
+
     if ((file = fopen(path, "r")))
     {
         fclose(file);
@@ -73,8 +79,10 @@ int file_exists(const char path[]) {
     return false;
 }
 
-int create_file(const char path[]) {
+int create_file(const char path[])
+{
     FILE *file;
+
     if(file = fopen(path, "a+")) {
         fclose(file);
 

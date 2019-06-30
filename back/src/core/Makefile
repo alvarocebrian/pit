@@ -2,6 +2,7 @@ SRCS = pit.c
 SRCS += ../command.c
 SRCS += ../directory.c
 SRCS += ../../lib/array.c
+SRCS += ../common.c
 
 INCLUDES = -I ../
 INCLUDES += -I ../../lib/

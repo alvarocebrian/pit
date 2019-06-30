@@ -12,12 +12,17 @@
 // Functions
 void usage(void);
 void init(void);
+int runCommand(const char *command, const char **params, int paramsc);
 
 
-int main(int argc, char **argv) {
-    if(argc > 1) {
+int main(int argc, const char **argv) {
+    if (--argc) {
         // Init pit
         init();
+
+        runCommand(argv[1], argv + 2, --argc);
+
+        return 0;
     }
 
     usage();
@@ -49,4 +54,19 @@ void init(void) {
             e_error(err);
         }
     }
+}
+
+int runCommand(const char *command, const char **params, int paramsc)
+{
+    char * execCommand;
+    char *commandPath = rasprintf("./pit-%s", command );
+
+    if (file_exists(commandPath) == true) {
+        execCommand = rasprintf("%s %s", commandPath, implode(" ", params, paramsc));
+        system(execCommand);
+
+        return 0;
+    }
+
+    e_error("El comando no existe");
 }
