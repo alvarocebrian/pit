@@ -2,13 +2,19 @@
 function cd() {
     if [ $# -gt 0 ]; then
         pathName=$(echo $* | tr -d "@")
-        path=$(pit path find $pathName);
+        path=$(pit path find $pathName 2> /dev/null);
 
-        if [ $path ]; then command cd $path; return 0; fi
+        if [ ${#path} -gt 0 ];then command cd $path; return 0; fi
     fi
-    command cd $*
+
+    if [ -z "$*" ]; then
+        command cd
+    else
+        command cd "$*"
+    fi
 }
 
+# cd autocomplete
 function __cd_pit()
 {
     local cur prev words cword

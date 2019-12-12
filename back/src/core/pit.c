@@ -1,26 +1,33 @@
-#include "command.h"
-#include "directory.h"
-#include "common.h"
-#include "error.h"
-
 // Sytem Libraries
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <stdbool.h>
+
+// Project Libraries
+#include "command.h"
+#include "directory.h"
+#include "common.h"
+#include "error.h"
+
+#define BIN_DIR "/usr/share/pit"
 
 // Functions
 void usage(void);
 void init(void);
-int runCommand(const char *command, const char **params, int paramsc);
+int runModule(const char *command, const char **params, int paramsc);
 
-
-int main(int argc, const char **argv) {
+/**
+ * PIT entrypoint function. It is responsible for initializing the environment and run the corresponding submodule
+ */
+int main(int argc, const char **argv)
+{
     if (--argc) {
         // Init pit
         init();
 
-        runCommand(argv[1], argv + 2, --argc);
+        runModule(argv[1], argv + 2, --argc);
 
         return 0;
     }
@@ -28,7 +35,11 @@ int main(int argc, const char **argv) {
     usage();
 }
 
-void usage(void) {
+/**
+ * Prints PIT help
+ */
+void usage(void)
+{
 
     fprintf(stderr,
         "The pit command improves commands\n"
@@ -42,27 +53,28 @@ void usage(void) {
     );
 }
 
-void init(void) {
-    char *PIT_PATH;
-    asprintf(&PIT_PATH,"%s/.pit", getenv("HOME"));
+/**
+ * Startup actions before running any submodule
+ */
+void init(void)
+{
+    char *PIT_PATH = rasprintf("%s/.pit", getenv("HOME"));
 
     // Create pit directory if it does not exists yet
     if (dir_exists(PIT_PATH) != true) {
         if (create_dir(PIT_PATH) == -1) {
-            char err[50];
-            sprintf(err, "Can't create pit directory at %s", PIT_PATH);
-            e_error(err);
+            e_error(rasprintf("Can't create pit directory at %s", PIT_PATH));
         }
     }
 }
 
-int runCommand(const char *command, const char **params, int paramsc)
+int runModule(const char *command, const char **params, int paramsc)
 {
     char * execCommand;
-    char *commandPath = rasprintf("./pit-%s", command );
+    char *modulePath = rasprintf("%s/pit-%s", BIN_DIR, command);
 
-    if (file_exists(commandPath) == true) {
-        execCommand = rasprintf("%s %s", commandPath, implode(" ", params, paramsc));
+    if (file_exists(modulePath) == true) {
+        execCommand = rasprintf("%s %s", modulePath, implode(" ", params, paramsc));
         system(execCommand);
 
         return 0;

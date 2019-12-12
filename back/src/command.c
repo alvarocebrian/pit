@@ -1,10 +1,11 @@
+#include <string.h>
+#include <stdio.h>
+#include <stdbool.h>
+
 #include "command.h"
 #include "directory.h"
 #include "error.h"
 #include "common.h"
-
-#include <string.h>
-#include <stdio.h>
 
 
 /**
@@ -55,4 +56,20 @@ char *_createCommandDir(const char dir[])
     }
 
     return commandDir;
+}
+
+/**
+ * Return the path for the current executable
+ */
+char *_binPath()
+{
+
+}
+
+/**
+ * Return the directory for the current executable
+ */
+char *_binDir()
+{
+
 }

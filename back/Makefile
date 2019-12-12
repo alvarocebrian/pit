@@ -1,4 +1,4 @@
-SRCS = $(wildcard src/*.c src/command/*.c lib/*.c)
+SRCS = $(wildcard src/*.c src/core/*.c lib/*.c)
 INSTALL = /usr/local/bin/
 FLAGS =  -Wall -Wstrict-prototypes -Wmissing-prototypes -Wshadow -Wconversion
 

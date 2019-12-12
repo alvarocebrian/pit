@@ -1,19 +1,18 @@
 #ifndef _DIRECTORY_H
 #define _DIRECTORY_H
 
+#include <stdbool.h>
+#include <sys/stat.h>
+
 #include "array.h"
 
-#include <sys/stat.h>
-#include <stdbool.h>
-#include <unistd.h>
-#include <string.h>
 
 /**
  *  @return
  *      true on dir_exists
  *      errno on error
  */
-int dir_exists(const char path[]);
+bool dir_exists(const char path[]);
 
 /**
  *  @return

@@ -1,18 +1,17 @@
-#include "common.h"
-#include "error.h"
-#include "directory.h"
-
 #include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
+
+#include "common.h"
+#include "error.h"
+#include "directory.h"
 
 // Private functions
 static int sort(const void *, const void*);
 
 
-int dir_exists(const char path[])
+bool dir_exists(const char path[])
 {
     DIR* dir;
     if ((dir = opendir(path))) {
