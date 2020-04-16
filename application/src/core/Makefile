@@ -15,13 +15,7 @@ CFLAGS += -D _GNU_SOURCE
 LDFLAGS = $(foreach lib, $(LIBS), -L $(LIB_DIR)/$(lib))
 LDLIBS = $(foreach lib, $(LIBS), -l$(lib))
 
-INSTALL_DIR = /usr/share/pit
-
-BIN_DIRECTORY = ../../bin
 BIN = pit
 
 pit: $(SRCS)
-	$(CC) $(SRCS) $(CFLAGS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $(BIN)
-
-clean:
-	$(RM) $(BIN)
+	$(CC) $(SRCS) $(CFLAGS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $(BUILD_DIR)/$(BIN)

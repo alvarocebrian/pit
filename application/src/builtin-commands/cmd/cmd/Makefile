@@ -19,10 +19,5 @@ LDLIBS = $(foreach lib, $(LIBS), -l$(lib))
 
 BIN = pit-cmd
 
-INSTALL_DIR = /usr/share/pit
-
-pit-cmd:
-	gcc $(SRCS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $(BIN)
-
-clean:
-	$(RM) $(BIN)
+$(BUILD_DIR)/$(BIN):
+	gcc $(SRCS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $(BUILD_DIR)/$(BIN)

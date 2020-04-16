@@ -8,6 +8,8 @@ SRCS += $(foreach src, command directory string, $(COMMON_DIR)/$(src).c)
 LIBS += array
 LIBS += argv
 
+LIBS_PATH = $(foreach lib, $(LIBS), $(LIB_DIR)/$(lib)/lib$(lib).a)
+
 CFLAGS += -I $(SRC_DIR)
 CFLAGS += $(foreach lib, $(LIBS), -I $(LIB_DIR)/$(lib))
 CFLAGS += -D _GNU_SOURCE
@@ -17,12 +19,8 @@ LDLIBS = $(foreach lib, $(LIBS), -l$(lib))
 
 BIN = pit-path
 
-pit-path: $(foreach lib, $(LIBS), $(LIB_DIR)/$(lib)/lib$(lib).a)
-	gcc $(SRCS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $(BIN)
+pit-path: $(SRCS) $(LIBS_PATH)
+	gcc $(SRCS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $(BUILD_DIR)/$(BIN)
 
-.PHONY:
-$(foreach lib, $(LIBS), $(LIB_DIR)/$(lib)/lib$(lib).a):
+$(LIBS_PATH):
 	$(MAKE) -C $(dir $@)
-
-clean:
-	$(RM) $(BIN)

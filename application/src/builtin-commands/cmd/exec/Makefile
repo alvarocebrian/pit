@@ -15,14 +15,9 @@ CFLAGS += $(foreach lib, $(LIBS), -I $(LIB_DIR)/$(lib))
 CFLAGS += -D _GNU_SOURCE
 
 LDFLAGS = $(foreach lib, $(LIBS), -L $(LIB_DIR)/$(lib))
-
 LDLIBS = $(foreach lib, $(LIBS), -l$(lib))
 
 BIN = pit-exec
 
-
-make:
-	gcc $(SRCS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $(BIN)
-
-clean:
-	$(RM) $(BIN)
+$(BUILD_DIR)/$(BIN): $(SRCS)
+	gcc $(SRCS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $(BUILD_DIR)/$(BIN)
