@@ -1,4 +1,4 @@
-INSTALL_DIR=/usr/share/pit/scripts
+INSTALL_DIR=/usr/local/share/pit/scripts
 
 # Create scripts directory
 [ -d $INSTALL_DIR ] || mkdir -p $INSTALL_DIR

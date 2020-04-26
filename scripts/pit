@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COMMANDS_DIR=/usr/share/pit/scripts/commands
+COMMANDS_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))/commands
 
 # Check pit is installed
 [ $(command -v pit) ] || exit 1;
